@@ -80,6 +80,7 @@ func TestMissingGeoIPDB(t *testing.T) {
 		t.Fatalf("next handler was not called")
 	}
 	assertHeader(t, req, mw.CountryHeader, mw.Unknown)
+	assertHeader(t, req, mw.CountryNameHeader, mw.Unknown)
 	assertHeader(t, req, mw.RegionHeader, mw.Unknown)
 	assertHeader(t, req, mw.CityHeader, mw.Unknown)
 }
@@ -97,11 +98,13 @@ func TestGeoIPFromRemoteAddr(t *testing.T) {
 	assertHeader(t, req, mw.CountryHeader, "DE")
 	assertHeader(t, req, mw.RegionHeader, "BY")
 	assertHeader(t, req, mw.CityHeader, "Munich")
+	assertHeader(t, req, mw.CountryNameHeader, "Germany")
 
 	req = httptest.NewRequest(http.MethodGet, "http://localhost", nil)
 	req.RemoteAddr = "qwerty:9999"
 	instance.ServeHTTP(httptest.NewRecorder(), req)
 	assertHeader(t, req, mw.CountryHeader, mw.Unknown)
+	assertHeader(t, req, mw.CountryNameHeader, mw.Unknown)
 	assertHeader(t, req, mw.RegionHeader, mw.Unknown)
 	assertHeader(t, req, mw.CityHeader, mw.Unknown)
 }
@@ -118,6 +121,7 @@ func TestGeoIPCountryDBFromRemoteAddr(t *testing.T) {
 	instance.ServeHTTP(httptest.NewRecorder(), req)
 
 	assertHeader(t, req, mw.CountryHeader, "DE")
+	assertHeader(t, req, mw.CountryNameHeader, "Germany")
 	assertHeader(t, req, mw.RegionHeader, mw.Unknown)
 	assertHeader(t, req, mw.CityHeader, mw.Unknown)
 }
@@ -135,6 +139,7 @@ func TestGeoIPFromXRealIP(t *testing.T) {
 
 	instance.ServeHTTP(httptest.NewRecorder(), req)
 	assertHeader(t, req, mw.CountryHeader, "DE")
+	assertHeader(t, req, mw.CountryNameHeader, "Germany")
 	assertHeader(t, req, mw.RegionHeader, "BY")
 	assertHeader(t, req, mw.CityHeader, "Munich")
 }

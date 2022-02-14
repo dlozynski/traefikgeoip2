@@ -73,6 +73,7 @@ func (mw *TraefikGeoIP2) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	if mw.lookup == nil {
 		req.Header.Set(CountryHeader, Unknown)
+		req.Header.Set(CountryNameHeader, Unknown)
 		req.Header.Set(RegionHeader, Unknown)
 		req.Header.Set(CityHeader, Unknown)
 		mw.next.ServeHTTP(rw, req)
@@ -92,13 +93,15 @@ func (mw *TraefikGeoIP2) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Printf("[geoip2] Unable to find for `%s', %v", ipStr, err)
 		res = &GeoIPResult{
-			country: Unknown,
-			region:  Unknown,
-			city:    Unknown,
+			country:     Unknown,
+			countryName: Unknown,
+			region:      Unknown,
+			city:        Unknown,
 		}
 	}
 
 	req.Header.Set(CountryHeader, res.country)
+	req.Header.Set(CountryNameHeader, res.countryName)
 	req.Header.Set(RegionHeader, res.region)
 	req.Header.Set(CityHeader, res.city)
 

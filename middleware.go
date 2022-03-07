@@ -69,7 +69,7 @@ func New(ctx context.Context, next http.Handler, cfg *Config, name string) (http
 }
 
 func (mw *TraefikGeoIP2) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
-	log.Printf("[geoip2] remoteAddr: %v, xRealIp: %v", req.RemoteAddr, req.Header.Get(RealIPHeader))
+	// log.Printf("[geoip2] remoteAddr: %v, xRealIp: %v", req.RemoteAddr, req.Header.Get(RealIPHeader))
 
 	if mw.lookup == nil {
 		req.Header.Set(CountryHeader, Unknown)

@@ -1,4 +1,4 @@
-displayName: MaxMind GeoIP2
+displayName: MaxMind GeoIP2 mod by dlozynski
 
 summary: 'Getting data from MaxMind GeoIP databases and pass it downstream via HTTP request headers.'
 

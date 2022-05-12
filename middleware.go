@@ -11,20 +11,21 @@ import (
 
 	"github.com/IncSW/geoip2"
 )
+
 // Headers part of the configuration
-// type Headers struct {
-// 	ContinentHeader      string `json:"ContinentHeader"`
-// 	ContinentNameHeader  string `json:"ContinentNameHeader"`
-// 	CountryHeader        string `json:"CountryHeader"`
-// 	CountryNameHeader    string `json:"CountryNameHeader"`
-// 	RegionHeader         string `json:"RegionHeader"`
-// 	CityHeader           string `json:"CityHeader"`
-// }
+type Headers struct {
+	// ContinentHeader      string `json:"ContinentHeader"`
+	// ContinentNameHeader  string `json:"ContinentNameHeader"`
+	Country        string `json:"country"`
+	// CountryNameHeader    string `json:"CountryNameHeader"`
+	// RegionHeader         string `json:"RegionHeader"`
+	// CityHeader           string `json:"CityHeader"`
+}
 
 // Config the plugin configuration.
 type Config struct {
 	DBPath string `json:"dbPath,omitempty"`
-	// Headers            Headers `json:"headers,omitempty"`
+	Headers Headers `json:"headers,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.
@@ -39,6 +40,7 @@ type TraefikGeoIP2 struct {
 	next   http.Handler
 	lookup LookupGeoIP2
 	name   string
+	headers	Headers
 }
 
 // New created a new TraefikGeoIP2 plugin.
@@ -49,6 +51,7 @@ func New(ctx context.Context, next http.Handler, cfg *Config, name string) (http
 			lookup: nil,
 			next:   next,
 			name:   name,
+			headers: cfg.Headers,
 		}, nil
 	}
 
@@ -75,6 +78,7 @@ func New(ctx context.Context, next http.Handler, cfg *Config, name string) (http
 		lookup: lookup,
 		next:   next,
 		name:   name,
+		headers: cfg.Headers,
 	}, nil
 }
 
@@ -121,5 +125,13 @@ func (mw *TraefikGeoIP2) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	req.Header.Set(RegionHeader, res.region)
 	req.Header.Set(CityHeader, res.city)
 
+	mw.addHeaders(req, res)
+
 	mw.next.ServeHTTP(rw, req)
+}
+
+func (mw *TraefikGeoIP2) addHeaders(req *http.Request, res *GeoIPResult) {
+	if mw.headers.Country != "" {
+		req.Header.Add(mw.headers.Country, res.country)
+	}
 }

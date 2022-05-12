@@ -17,7 +17,7 @@ type Headers struct {
 	// ContinentHeader      string `json:"ContinentHeader"`
 	// ContinentNameHeader  string `json:"ContinentNameHeader"`
 	Country        string `json:"country"`
-	// CountryNameHeader    string `json:"CountryNameHeader"`
+	CountryName    string `json:"countryName"`
 	// RegionHeader         string `json:"RegionHeader"`
 	// CityHeader           string `json:"CityHeader"`
 }

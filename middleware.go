@@ -92,7 +92,7 @@ func (mw *TraefikGeoIP2) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		// req.Header.Set(CountryNameHeader, Unknown)
 		// req.Header.Set(RegionHeader, Unknown)
 		// req.Header.Set(CityHeader, Unknown)
-		res = &GeoIPResult{
+		var res = &GeoIPResult{
 			continent:		Unknown,
 			continentName:	Unknown,
 			country:     	Unknown,

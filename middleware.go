@@ -11,10 +11,20 @@ import (
 
 	"github.com/IncSW/geoip2"
 )
+// Headers part of the configuration
+type Headers struct {
+	ContinentHeader      string `json:"ContinentHeader"`
+	ContinentNameHeader  string `json:"ContinentNameHeader"`
+	CountryHeader        string `json:"CountryHeader"`
+	CountryNameHeader    string `json:"CountryNameHeader"`
+	RegionHeader         string `json:"RegionHeader"`
+	CityHeader           string `json:"CityHeader"`
+}
 
 // Config the plugin configuration.
 type Config struct {
 	DBPath string `json:"dbPath,omitempty"`
+	Headers            Headers `json:"headers,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.
@@ -72,6 +82,8 @@ func (mw *TraefikGeoIP2) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// log.Printf("[geoip2] remoteAddr: %v, xRealIp: %v", req.RemoteAddr, req.Header.Get(RealIPHeader))
 
 	if mw.lookup == nil {
+		req.Header.Set(ContinentHeader, Unknown)
+		req.Header.Set(ContinentNameHeader, Unknown)
 		req.Header.Set(CountryHeader, Unknown)
 		req.Header.Set(CountryNameHeader, Unknown)
 		req.Header.Set(RegionHeader, Unknown)
@@ -93,13 +105,17 @@ func (mw *TraefikGeoIP2) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Printf("[geoip2] Unable to find for `%s', %v", ipStr, err)
 		res = &GeoIPResult{
-			country:     Unknown,
-			countryName: Unknown,
-			region:      Unknown,
-			city:        Unknown,
+			continent:		Unknown,
+			continentName:	Unknown,
+			country:     	Unknown,
+			countryName: 	Unknown,
+			region:      	Unknown,
+			city:        	Unknown,
 		}
 	}
 
+	req.Header.Set(ContinentHeader, res.continent)
+	req.Header.Set(ContinentNameHeader, res.continentName)
 	req.Header.Set(CountryHeader, res.country)
 	req.Header.Set(CountryNameHeader, res.countryName)
 	req.Header.Set(RegionHeader, res.region)

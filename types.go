@@ -16,6 +16,10 @@ const DefaultDBPath = "GeoLite2-Country.mmdb"
 const (
 	// RealIPHeader real ip header.
 	RealIPHeader = "X-Real-IP"
+	// ContinentHeader Continent header name.
+	ContinentHeader = "X-GeoIP2-Continent"
+	// CountryNameHeader Continent name header name.
+	ContinentNameHeader = "X-GeoIP2-ContinentName"
 	// CountryHeader country header name.
 	CountryHeader = "X-GeoIP2-Country"
 	// CountryNameHeader country name header name.
@@ -28,10 +32,12 @@ const (
 
 // GeoIPResult GeoIPResult.
 type GeoIPResult struct {
-	country     string
-	countryName string
-	region      string
-	city        string
+	continent     	string
+	continentName	string
+	country     	string
+	countryName 	string
+	region      	string
+	city        	string
 }
 
 // LookupGeoIP2 LookupGeoIP2.
@@ -45,10 +51,12 @@ func CreateCityDBLookup(rdr *geoip2.CityReader) LookupGeoIP2 {
 			return nil, fmt.Errorf("%w", err)
 		}
 		retval := GeoIPResult{
-			country:     rec.Country.ISOCode,
-			countryName: rec.Country.Names["en"],
-			region:      Unknown,
-			city:        rec.City.Names["en"],
+			continent:   	rec.Continent.Code,
+			continentName:  rec.Continent.Names["en"],
+			country:     	rec.Country.ISOCode,
+			countryName: 	rec.Country.Names["en"],
+			region:      	Unknown,
+			city:        	rec.City.Names["en"],
 		}
 		if rec.Subdivisions != nil {
 			retval.region = rec.Subdivisions[0].ISOCode

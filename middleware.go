@@ -12,14 +12,14 @@ import (
 	"github.com/IncSW/geoip2"
 )
 
-// Headers part of the configuration
+// Headers part of the configuration.
 type Headers struct {
-	// ContinentHeader      string `json:"ContinentHeader"`
-	// ContinentNameHeader  string `json:"ContinentNameHeader"`
+	Continent      string `json:"continent"`
+	ContinentName  string `json:"continentName"`
 	Country        string `json:"country"`
 	CountryName    string `json:"countryName"`
-	// RegionHeader         string `json:"RegionHeader"`
-	// CityHeader           string `json:"CityHeader"`
+	Region         string `json:"region"`
+	City           string `json:"city"`
 }
 
 // Config the plugin configuration.
@@ -86,12 +86,23 @@ func (mw *TraefikGeoIP2) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	// log.Printf("[geoip2] remoteAddr: %v, xRealIp: %v", req.RemoteAddr, req.Header.Get(RealIPHeader))
 
 	if mw.lookup == nil {
-		req.Header.Set(ContinentHeader, Unknown)
-		req.Header.Set(ContinentNameHeader, Unknown)
-		req.Header.Set(CountryHeader, Unknown)
-		req.Header.Set(CountryNameHeader, Unknown)
-		req.Header.Set(RegionHeader, Unknown)
-		req.Header.Set(CityHeader, Unknown)
+		// req.Header.Set(ContinentHeader, Unknown)
+		// req.Header.Set(ContinentNameHeader, Unknown)
+		// req.Header.Set(CountryHeader, Unknown)
+		// req.Header.Set(CountryNameHeader, Unknown)
+		// req.Header.Set(RegionHeader, Unknown)
+		// req.Header.Set(CityHeader, Unknown)
+		res = &GeoIPResult{
+			continent:		Unknown,
+			continentName:	Unknown,
+			country:     	Unknown,
+			countryName: 	Unknown,
+			region:      	Unknown,
+			city:        	Unknown,
+		}
+
+		mw.addHeaders(req, res)
+
 		mw.next.ServeHTTP(rw, req)
 		return
 	}
@@ -118,12 +129,12 @@ func (mw *TraefikGeoIP2) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	req.Header.Set(ContinentHeader, res.continent)
-	req.Header.Set(ContinentNameHeader, res.continentName)
-	req.Header.Set(CountryHeader, res.country)
-	req.Header.Set(CountryNameHeader, res.countryName)
-	req.Header.Set(RegionHeader, res.region)
-	req.Header.Set(CityHeader, res.city)
+	// req.Header.Set(ContinentHeader, res.continent)
+	// req.Header.Set(ContinentNameHeader, res.continentName)
+	// req.Header.Set(CountryHeader, res.country)
+	// req.Header.Set(CountryNameHeader, res.countryName)
+	// req.Header.Set(RegionHeader, res.region)
+	// req.Header.Set(CityHeader, res.city)
 
 	mw.addHeaders(req, res)
 
@@ -131,7 +142,22 @@ func (mw *TraefikGeoIP2) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 }
 
 func (mw *TraefikGeoIP2) addHeaders(req *http.Request, res *GeoIPResult) {
+	if mw.headers.Continent != "" {
+		req.Header.Add(mw.headers.Continent, res.continent)
+	}
+	if mw.headers.ContinentName != "" {
+		req.Header.Add(mw.headers.ContinentName, res.continentName)
+	}
 	if mw.headers.Country != "" {
 		req.Header.Add(mw.headers.Country, res.country)
+	}
+	if mw.headers.CountryName != "" {
+		req.Header.Add(mw.headers.CountryName, res.countryName)
+	}
+	if mw.headers.Region != "" {
+		req.Header.Add(mw.headers.Region, res.region)
+	}
+	if mw.headers.City != "" {
+		req.Header.Add(mw.headers.City, res.city)
 	}
 }

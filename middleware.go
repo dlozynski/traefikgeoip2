@@ -12,19 +12,19 @@ import (
 	"github.com/IncSW/geoip2"
 )
 // Headers part of the configuration
-type Headers struct {
-	ContinentHeader      string `json:"ContinentHeader"`
-	ContinentNameHeader  string `json:"ContinentNameHeader"`
-	CountryHeader        string `json:"CountryHeader"`
-	CountryNameHeader    string `json:"CountryNameHeader"`
-	RegionHeader         string `json:"RegionHeader"`
-	CityHeader           string `json:"CityHeader"`
-}
+// type Headers struct {
+// 	ContinentHeader      string `json:"ContinentHeader"`
+// 	ContinentNameHeader  string `json:"ContinentNameHeader"`
+// 	CountryHeader        string `json:"CountryHeader"`
+// 	CountryNameHeader    string `json:"CountryNameHeader"`
+// 	RegionHeader         string `json:"RegionHeader"`
+// 	CityHeader           string `json:"CityHeader"`
+// }
 
 // Config the plugin configuration.
 type Config struct {
 	DBPath string `json:"dbPath,omitempty"`
-	Headers            Headers `json:"headers,omitempty"`
+	// Headers            Headers `json:"headers,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.

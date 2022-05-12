@@ -18,7 +18,7 @@ const (
 	RealIPHeader = "X-Real-IP"
 	// ContinentHeader Continent header name.
 	ContinentHeader = "X-GeoIP2-Continent"
-	// CountryNameHeader Continent name header name.
+	// ContinentNameHeader Continent name header name.
 	ContinentNameHeader = "X-GeoIP2-ContinentName"
 	// CountryHeader country header name.
 	CountryHeader = "X-GeoIP2-Country"
@@ -73,10 +73,12 @@ func CreateCountryDBLookup(rdr *geoip2.CountryReader) LookupGeoIP2 {
 			return nil, fmt.Errorf("%w", err)
 		}
 		retval := GeoIPResult{
-			country:     rec.Country.ISOCode,
-			countryName: rec.Country.Names["en"],
-			region:      Unknown,
-			city:        Unknown,
+			continent:   	rec.Continent.Code,
+			continentName:  rec.Continent.Names["en"],
+			country:     	rec.Country.ISOCode,
+			countryName: 	rec.Country.Names["en"],
+			region:      	Unknown,
+			city:        	Unknown,
 		}
 		return &retval, nil
 	}
